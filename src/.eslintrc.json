@@ -10,8 +10,8 @@
         "radix": "off",
         "object-curly-newline": "off",
         "no-plusplus": "off",
+        "no-mixed-operators": "off",
         "strict": 0,
         "react/destructuring-assignment": 0
-
     }
 }

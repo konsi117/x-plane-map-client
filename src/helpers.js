@@ -1,3 +1,4 @@
+/* globals document */
 const DEVIATION_THRESHOLD = 0.1; // square seconds
 const FEET_IN_A_METER = 3.28;
 const METERS_IN_A_LAT_DEGREE = 111319;
@@ -162,4 +163,27 @@ export function formatLatLon([latitude, longitude]) {
   const longitudeText = Math.abs(longitude).toLocaleString('en-us', { maximumFractionDigits: 4 });
 
   return `${latitudeText} ${northOrSouth}, ${longitudeText} ${eastOrWest}`;
+}
+
+export function decodeConfig() {
+  const config = document.location.search
+    .substring(1)
+    .split('&')
+    .map(decodeURIComponent)
+    .reduce((accumulator, fragment) => {
+      const [key, value] = fragment.split('=');
+
+      return {
+        ...accumulator,
+        [key]: value || true,
+      };
+    }, {});
+
+  if (config.mode === 'remote') {
+    config.mapServerURL = `http://${config.remoteServerIP}:${config.remoteMapServerPort}`;
+  } else {
+    config.mapServerURL = `http://${config.localIP}:${config.mapServerPort}`;
+  }
+
+  return config;
 }

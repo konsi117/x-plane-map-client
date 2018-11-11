@@ -1,5 +1,6 @@
-/* globals fetch */
+/* globals fetch, PLATFORM */
 import { ICONS } from './constants';
+import { decodeConfig } from './helpers';
 
 export const SET_ACTIVE_PLANE = 'SET_ACTIVE_PLANE';
 export const RENAME_PLANE = 'RENAME_PLANE';
@@ -16,7 +17,7 @@ export const REQUEST_PLANES = 'REQUEST_PLANES';
 export const RECEIVE_PLANES = 'RECEIVE_PLANES';
 export const REJECT_PLANES = 'REJECT_PLANES';
 
-const endpoint = process.env.NODE_ENV === 'development' ? 'http://localhost:9000' : '';
+const endpoint = PLATFORM === 'electron' ? decodeConfig().mapServerURL : '';
 
 export function setActivePlane(plane) {
   return { type: SET_ACTIVE_PLANE, key: plane ? plane.ip : plane };
