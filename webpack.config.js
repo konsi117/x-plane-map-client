@@ -1,10 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-module.exports = {
+const config = {
   entry: './src/index.jsx',
   output: {
     filename: './client.js',
+    chunkFilename: 'chunk-[name].js',
     path: path.resolve(__dirname, 'build'),
   },
   mode: 'development',
@@ -26,7 +28,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['env', 'react'],
-            plugins: ['transform-object-rest-spread', 'transform-class-properties'],
+            plugins: ['transform-object-rest-spread', 'transform-class-properties', 'syntax-dynamic-import'],
           },
         },
       },
@@ -41,6 +43,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx'],
+    alias: {
+      leaflet: 'leaflet/dist/leaflet.js',
+    },
   },
   plugins: [
     new webpack.DefinePlugin({ PLATFORM: JSON.stringify('web') }),
@@ -51,3 +56,9 @@ module.exports = {
     },
   },
 };
+
+if (process.env.ANALYZE_BUNDLE) {
+  config.plugins.push(new BundleAnalyzerPlugin());
+}
+
+module.exports = config;

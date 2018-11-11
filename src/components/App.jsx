@@ -7,11 +7,16 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import MenuIcon from '@material-ui/icons/Menu';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import PlanesMap from '../containers/PlanesMap';
-import PlanesPanel from '../containers/PlanesPanel';
 import PlaneReplayControls from '../containers/PlaneReplayControls';
-import MobileOverlay from './MobileOverlay';
 import '../stylesheets/map.less';
+
+const PlanesPanel = React.lazy(() => import('../containers/PlanesPanel'));
+const PlanesMap = React.lazy(() => import('../containers/PlanesMap'));
+
+let MobileOverlay = null;
+if (PLATFORM === 'electron') {
+  MobileOverlay = React.lazy(() => import('./MobileOverlay'));
+}
 
 export default class App extends Component {
   constructor() {
@@ -54,11 +59,13 @@ export default class App extends Component {
     return (
       <React.Fragment>
         <div id="map-canvas-wrapper" className={this.state.isPanelOpen ? 'shrinked' : ''}>
-          <PlanesMap
-            ref={this.handleMapLoad}
-            containerElement={<div style={{ height: '100%' }} />}
-            mapElement={<div style={{ height: '100%' }} />}
-          />
+          <React.Suspense fallback={<div />}>
+            <PlanesMap
+              ref={this.handleMapLoad}
+              containerElement={<div style={{ height: '100%' }} />}
+              mapElement={<div style={{ height: '100%' }} />}
+            />
+          </React.Suspense>
           <PlaneReplayControls />
           <div className="buttons">
             {PLATFORM === 'electron' && (
@@ -80,12 +87,18 @@ export default class App extends Component {
           </div>
         </div>
         <Drawer variant="persistent" anchor="right" open={this.state.isPanelOpen}>
-          <PlanesPanel />
+          <React.Suspense fallback={<div id="panel" />}>
+            <PlanesPanel />
+          </React.Suspense>
         </Drawer>
-        <MobileOverlay
-          visible={this.state.isMobileOverlayVisible}
-          onClose={() => this.setState({ isMobileOverlayVisible: false })}
-        />
+        {PLATFORM === 'electron' && (
+          <React.Suspense>
+            <MobileOverlay
+              visible={this.state.isMobileOverlayVisible}
+              onClose={() => this.setState({ isMobileOverlayVisible: false })}
+            />
+          </React.Suspense>
+        )}
       </React.Fragment>
     );
   }

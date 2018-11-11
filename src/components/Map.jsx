@@ -1,18 +1,17 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["_zoom"] }] */
 
 import React, { Component } from 'react';
-import { Map as LeafletMap, LayersControl, TileLayer } from 'react-leaflet';
+import { Map as LeafletMap, LayersControl, TileLayer, Marker } from 'react-leaflet';
 import PropTypes from 'prop-types';
 
 import { POLYLINE_OPTIONS, BUILT_ICONS, REFRESH_FRAME_RATE } from '../constants';
-import Trace from './Trace';
-import RotatingMarker from './RotatingMarker';
 import GoogleMapLayer from './GoogleMapLayer';
 import GoogleSatelliteLayer from './GoogleSatelliteLayer';
 import GoogleTerrainLayer from './GoogleTerrainLayer';
-import PlanePopup from './PlanePopup';
 
-require('leaflet.gridlayer.googlemutant');
+const RotatingMarker = React.lazy(() => import('./RotatingMarker'));
+const PlanePopup = React.lazy(() => import('./PlanePopup'));
+const Trace = React.lazy(() => import('./Trace'));
 
 const navTiles = 'https://{s}.gis.flightplandatabase.com/tile/nav/{z}/{x}/{y}.png';
 const osmTiles = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -96,7 +95,7 @@ class Map extends Component {
           </LayersControl.Overlay>
         </LayersControl>
         { !this.props.replayingPlane && this.props.planes.map(plane => (
-          <React.Fragment key={plane.ip}>
+          <React.Suspense key={plane.ip} fallback={<Marker position={plane.position} />}>
             <RotatingMarker
               position={plane.position}
               icon={BUILT_ICONS[plane.icon]}
@@ -111,10 +110,10 @@ class Map extends Component {
                 positions={plane.path}
               />
             )}
-          </React.Fragment>
+          </React.Suspense>
         ))}
         { this.props.replayingPlane && (
-          <React.Fragment>
+          <React.Suspense fallback={<Marker position={this.props.replayingPlane.position} />}>
             <RotatingMarker
               position={this.props.replayingPlane.position}
               icon={BUILT_ICONS[this.props.replayingPlane.icon]}
@@ -127,7 +126,7 @@ class Map extends Component {
               {...POLYLINE_OPTIONS}
               positions={this.props.replayingPlane.visiblePath}
             />
-          </React.Fragment>
+          </React.Suspense>
         )}
       </LeafletMap>
     );

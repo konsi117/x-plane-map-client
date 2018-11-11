@@ -1,5 +1,6 @@
 node_modules
 build/client.js
+build/chunk-*.js
 yarn-error.log
 localhost-key.pem
 localhost.pem
