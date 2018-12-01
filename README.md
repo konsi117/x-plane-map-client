@@ -1,6 +1,6 @@
-# X-Plane-Map API
+# Airspaces client
 
-This is the frontend of [X-Plane-Map](https://xmap.fouc.net) - both its Electron and hosted version.
+This is the frontend of [Airspaces](https://airspaces.app) - both its Electron and hosted version.
 
 ### Installing this repo locally:
 
