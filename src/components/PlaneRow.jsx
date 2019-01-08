@@ -11,7 +11,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ShowChartsIcon from '@material-ui/icons/ShowChart';
-import ReplayIcon from '@material-ui/icons/Replay';
 import ClearIcon from '@material-ui/icons/Clear';
 
 import EditableText from './EditableText';
@@ -99,18 +98,7 @@ class PlaneRow extends Component {
               />
             </MenuItem>
             <MenuItem
-              dense
-              onClick={() => { this.handleMenuClose(); this.props.onPlaneReplayMode(); }}
-            >
-              <ListItemIcon>
-                <ReplayIcon />
-              </ListItemIcon>
-              <ListItemText
-                inset
-                primary="Enter Replay mode"
-              />
-            </MenuItem>
-          </Menu>
+
         </ListItemSecondaryAction>
       </ListItem>
     );
@@ -135,4 +123,4 @@ PlaneRow.propTypes = {
   }).isRequired,
 };
 
-export default PlaneRow;
+
